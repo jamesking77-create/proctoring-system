@@ -7,6 +7,7 @@ const authenticateToken = require("../middleware/authentication");
 
 exports.registerUser = async (req, res, next) => {
   try {
+
     const { username, password, cohort } = req.body;
     if (!username || !password || !cohort) {
       return res
@@ -31,12 +32,14 @@ exports.registerUser = async (req, res, next) => {
 
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
+     
     });
-
+    authenticateToken.authenticateToken(req, res);
     return res
       .status(201)
       .header("Authorization", "Bearer" + token)
       .json({ message: "User registered successfully." });
+
   } catch (err) {
     return next(err);
   }
@@ -44,7 +47,6 @@ exports.registerUser = async (req, res, next) => {
 
 function login(req, res, next) {
   try {
-    authenticateToken.authenticateToken(req, res);
     const { username, password } = req.body;
     const storedUser = getUserFromDatabase(username);
     if (storedUser && comparePasswords(password, storedUser.password)) {
