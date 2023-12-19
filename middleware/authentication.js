@@ -1,17 +1,25 @@
+const jwt = require('jsonwebtoken');
+
 function authenticateToken(req, res, next) {
-    const token = req.header('Authorization');
-  
-    if (!token) return res.status(401).json({ message: 'Access denied' });
-  
-    jwt.verify(token, 'your_secret_key', (err, user) => {
-      if (err) return res.status(403).json({ message: 'Invalid token' });
-  
-      req.user = user;
-      next();
-    });
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied - No token provided' });
   }
-  
-  // Example of protected route
-  app.get('/authorized-route', authenticateToken, (req, res) => {
-    res.json({ message: 'This is a protected route', user: req.user });
-  });
+
+  try {
+    const secretKey = process.env.JWT_SECRET; 
+    const decoded = jwt.verify(token, secretKey);
+
+    req.user = decoded; 
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: 'Invalid token' });
+  }
+}
+
+module.exports = {
+  authenticateToken,
+};
+
