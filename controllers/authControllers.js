@@ -1,5 +1,6 @@
 const {User, cohortEnum} = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (req, res, next) => {
     try {
@@ -19,7 +20,12 @@ exports.registerUser = async (req, res, next) => {
         const newUser = new User({username, password, cohort});
         await newUser.save();
 
-        return res.status(201).json({message: 'User registered successfully.'})
+        const token = jwt.sign({userId: newUser._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+
+        return res
+            .status(201)
+            .header('Authorization', 'Bearer' + token)
+            .json({message: 'User registered successfully.'});
     } catch (err) {
         return next(err);
     }
