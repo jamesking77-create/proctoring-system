@@ -34,7 +34,7 @@ exports.registerUser = async (req, res, next) => {
       expiresIn: "1h",
      
     });
-    authenticateToken.authenticateToken(req, res);
+    authenticateToken.authenticateToken(req, res)
     return res
       .status(201)
       .header("Authorization", "Bearer" + token)
