@@ -86,6 +86,3 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
   }
 }
 
-module.exports = {
-  login,
-};
