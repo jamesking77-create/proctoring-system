@@ -71,7 +71,7 @@ async function getUserFromDatabase(username) {
     return user;
   } catch (error) {
     console.error("Error fetching user from the database:", error);
-    throw error;
+    throw error
   }
 }
 
