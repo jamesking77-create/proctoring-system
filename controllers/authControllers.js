@@ -5,14 +5,9 @@ require("dotenv").config();
 const secureApiKey = process.env.SECURE_API_KEY;
 const authenticateToken = require("../middleware/authentication");
 
-<<<<<<< HEAD
-exports.registerUser = async (req, res, next) => {
-  try{
 
-=======
 const registerUser = async (req, res, next) => {
   try {
->>>>>>> b33562467e875c4c5cabbd64f7e0927d4f62de7c
     const { username, password, cohort } = req.body;
     if (!username || !password || !cohort) {
       return res
