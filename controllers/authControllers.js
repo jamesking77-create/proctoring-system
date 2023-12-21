@@ -31,7 +31,7 @@ const registerUser = async (req, res, next) => {
     const newUser = new User({ username, password, cohort });
     await newUser.save();
 
-    const token = jwt.sign({ userId: newUser._id }, "user info", {
+    const token = jwt.sign({ userId: newUser._id }, "user info", { // process.env.JWT_SECRET is empty need to parse in secret key for user 
       expiresIn: "1h",
     });
     return res
