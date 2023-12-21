@@ -1,4 +1,4 @@
-const { User, cohortEnum } = require("../models/userModel");
+const { User, cohortList } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -6,7 +6,7 @@ const secureApiKey = process.env.SECURE_API_KEY;
 const authenticateToken = require("../middleware/authentication");
 
 exports.registerUser = async (req, res, next) => {
-  try {
+  try{
 
     const { username, password, cohort } = req.body;
     if (!username || !password || !cohort) {
@@ -14,7 +14,7 @@ exports.registerUser = async (req, res, next) => {
         .status(400)
         .json({ message: "Please provided all required fields" });
     }
-    if (!cohortEnum.values.includes(cohort)) {
+    if (!cohortList.values.includes(cohort)) {
       return res.status(400).json({
         message: "Invalid Cohort. Must be one of: 16, 17, 18, 19, 10, 21",
       });
