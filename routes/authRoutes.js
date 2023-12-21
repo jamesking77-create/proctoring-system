@@ -27,6 +27,7 @@ app.use("/api", router);
 router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
 
+
 app.get("/", (req, res) => {
   res.send("server is working");
 });
