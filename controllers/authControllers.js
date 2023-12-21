@@ -5,7 +5,7 @@ require("dotenv").config();
 const secureApiKey = process.env.SECURE_API_KEY;
 const authenticateToken = require("../middleware/authentication");
 
-exports.registerUser = async (req, res, next) => {
+const registerUser = async (req, res, next) => {
   try {
 
     const { username, password, cohort } = req.body;
@@ -45,7 +45,7 @@ exports.registerUser = async (req, res, next) => {
   }
 };
 
-function login(req, res, next) {
+const login = (req, res) => {
   try {
     const { username, password } = req.body;
     const storedUser = getUserFromDatabase(username);
@@ -57,11 +57,11 @@ function login(req, res, next) {
     } else {
       res.status(401).json({ message: "Invalid username or password" });
     }
-    next();
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An Error Occured" });
-    next();
+
   }
 }
 
@@ -87,5 +87,6 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
 }
 
 module.exports = {
-  login,
+    registerUser,
+  login
 };
