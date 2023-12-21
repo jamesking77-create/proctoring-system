@@ -1,7 +1,6 @@
 {
   "name": "proctoringsystem",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +17,21 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
     "mongoose": "^8.0.3",
     "nodemon": "^3.0.2"
   }
+=======
+    "mongoose": "^8.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesking77-create/proctoring-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jamesking77-create/proctoring-system/issues"
+  },
+  "homepage": "https://github.com/jamesking77-create/proctoring-system#readme",
+  "description": ""
+>>>>>>> b33562467e875c4c5cabbd64f7e0927d4f62de7c
 }
