@@ -2,44 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authControllers = require('./controllers/authControllers');
-
-const colors = require('colors');
-
 const app = express();
+const authControllers = require('./controllers/authControllers');
+const config = require('./config/config');
+const colors = require('colors')
 const router = express.Router();
 
-app.use(bodyParser.json());
+mongoose.connect(config.mongodb.url);
+
+const PORT = process.env.port || 3000;
+
+app.use(express.json());
 app.use(cors());
 
-mongoose.connect('mongodb://127.0.0.1:27017/proctoring-system',
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+router.post("/register", authControllers.registerUser);
+router.post("/login", authControllers.login);
+
+app.use("/api", router);
+
+app.get("/", (req, res) => {
+    res.send("server is working");
+});
+
+// app.use(bodyParser.json());
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-    console.log('Connected to MongoDB'.green.underline)
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`.rainbow);
 });
 
-// router.post('/auth/register', authControllers.registerUser);
-// router.post('/auth/login', authControllers.login);
 
-app.use('/api/users', router);
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+    console.log('Connected to MongoDB'.green)
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({message: 'Internal server error'});
 });
-
-const PORT = process.env.port || 3001;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`.yellow);
-});
-
 
 // const express = require('express');
 // const mongoose = require('mongoose');

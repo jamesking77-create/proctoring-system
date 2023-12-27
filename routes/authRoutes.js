@@ -1,27 +1,14 @@
 const express = require("express");
 const authControllers = require("../controllers/authControllers");
-const app = express();
+const {authenticateToken} = require("../middleware/authentication");
 const router = express.Router();
 
-const mongoose = require('mongoose');
-const config = require('../config/config');
-
-mongoose.connect(config.mongodb.url);
-
-
-const PORT = 3000;
-
-app.use(express.json());
-app.use("/api", router);
 
 router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
 
-
-app.get("/", (req, res) => {
-  res.send("server is working");
+router.get("/protected-resource", authenticateToken, (req, res) => {
+    res.json({message: "Access granted to protected resource"});
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-}); 
+module.exports = router;

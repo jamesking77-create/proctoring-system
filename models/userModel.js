@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt');
 
 const cohortList = {
     values: ['16', '17', '18', '19', '20', '21'],
-    message: 'Invalid Cohort, Must be one of 16, 17, 18, 19, 20, 21'
+    message: 'COHORT_EXCEPTION',
 };
+const COHORT_EXCEPTION = 'Invalid Cohort, Must be one of 16, 17, 18, 19, 20, 21';
 
 const userSchema = new mongoose.Schema({
     username: {type: String, required: true, unique: true},
@@ -28,4 +29,4 @@ userSchema.pre('save', async function (next) {
 });
 
 const User = mongoose.model('User', userSchema);
-module.exports = {User, cohortList};
+module.exports = {User, cohortList, COHORT_EXCEPTION};
