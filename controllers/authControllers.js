@@ -48,12 +48,8 @@ const login = async (req, res) => {
                 expiresIn: "1h",
             });
             res.header("Authorization", "Bearer" + token);
-            if (authenticateToken(res.header).res.status(401)){
-                res.error({message: "Access denied"});
-            }
-            else{
                 res.json({message: "Login successful"});
-        }
+        
         } else {
             res.status(401).json({message: "Invalid username or password"});
         }
