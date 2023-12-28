@@ -1,6 +1,7 @@
 const { User, cohortEnum } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const config = require('../config/config')
 require("dotenv").config();
 const secureApiKey = process.env.SECURE_API_KEY;
 const authenticateToken = require("../middleware/authentication");
@@ -31,9 +32,12 @@ const registerUser = async (req, res, next) => {
     const newUser = new User({ username, password, cohort });
     await newUser.save();
 
-    const token = jwt.sign({ userId: newUser._id }, "user info", { // process.env.JWT_SECRET is empty need to parse in secret key for user 
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { // process.env.JWT_SECRET is empty need to parse in secret key for user 
       expiresIn: "1h",
+      
     });
+    console.log(token)  
+
     return res
       .status(201)
       .header("Authorization", "Bearer" + token)
@@ -62,8 +66,7 @@ const login =async (req, res) => {
 async function getUserFromDatabase(username) {
   try {
 
-    const user = await User.findOne({ username });
-
+    const user = await User.findOne({ username }); 
     if (user) {
       return user;
     } else {
