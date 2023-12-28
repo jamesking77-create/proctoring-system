@@ -36,6 +36,7 @@ const registerUser = async (req, res, next) => {
     }
 };
 
+
 const login = async (req, res) => {
     try {
         const {username, password} = req.body;
@@ -53,6 +54,7 @@ const login = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({message: "Invalid username or password"});
+
     }
 };
 
