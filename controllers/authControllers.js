@@ -47,7 +47,7 @@ const login = async (req, res) => {
             const token = jwt.sign({userId: storedUser._id}, process.env.JWT_SECRET, {
                 expiresIn: "1h",
             });
-            res.header("Authorization", "Bearer" + token);
+            res.header("Authorization", "Bearer " + token);
                 res.json({message: "Login successful"});
         
         } else {
@@ -93,6 +93,7 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
 const protectedResource = (req, res) => {
     res.json({message: "Access granted to protected resource"});
 }
+
 
 module.exports = {
     registerUser,
