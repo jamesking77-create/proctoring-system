@@ -35,14 +35,8 @@ const registerUser = async (req, res, next) => {
     return next(err);
   }
 };
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const storedUser = await getUserFromDatabase(username);
 
-    if (!storedUser) {
-      return res.status(401).json({ message: "Invalid username or password" });
-    }
+
 
     const comparePassword = await comparePasswords(
       password,
@@ -63,6 +57,10 @@ const login = async (req, res) => {
       res.json({ message: "Login successful" });
     } else {
       res.status(401).json({ message: "Invalid username or password" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Invalid username or password"});
     }
   } catch (error) {
     console.error(error);
