@@ -43,10 +43,10 @@ const login = async (req, res) => {
         const comparePassword = await comparePasswords(password, storedUser.password)
         if (comparePassword && storedUser) {
             const token = jwt.sign({userId: storedUser._id}, process.env.JWT_SECRET, {
-                expiresIn: "1h",
+                expiresIn: "24h",
             });
-            res.header("Authorization", "Bearer" + token);
-            res.json({message: "Login successful"});
+            //res.header("Authorization", "Bearer " + token);
+            res.json({message: "Login successful", token: "Bearer " + token});
         } else {
             res.status(401).json({message: "Invalid username or password"});
         }

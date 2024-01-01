@@ -10,5 +10,6 @@ router.post("/login", authControllers.login);
 router.get("/protected-resource", authenticateToken, (req, res) => {
     res.json({message: "Access granted to protected resource"});
 });
+//mongodb://localhost/proctoring-system
 
 module.exports = router;

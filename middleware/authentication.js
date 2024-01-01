@@ -2,15 +2,17 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 function authenticateToken(req, res, next) {
-    const token = req.header('Authorization');
+    const token = req.header('Authorization').trim();
 
     if (!token) {
         return res.status(401).json({message: 'Access denied - No token provided'});
     }
+    console.log("Received Token:", token);
 
     try {
-        const secretKey = process.env.JWT_SECRET;
-        const decoded = jwt.verify(token, secretKey);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        console.log("Decoded token:", decoded);
 
         if (decoded.exp < Date.now() / 1000) {
             return res.status(401).json({message: 'Token has expired'});

@@ -6,6 +6,7 @@ const app = express();
 const authControllers = require('./controllers/authControllers');
 const config = require('./config/config');
 const colors = require('colors')
+const {authenticateToken, protect} = require("./middleware/authentication");
 const router = express.Router();
 
 mongoose.connect(config.mongodb.url);
@@ -17,6 +18,9 @@ app.use(cors());
 
 router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
+router.get("/protected-resource", protect, (req, res) => {
+    res.json({message: "Access granted to protected resource"});
+});
 
 app.use("/api", router);
 
