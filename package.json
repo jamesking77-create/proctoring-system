@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+
+    "test": "jest"
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "app.js"
   },
@@ -30,5 +32,8 @@
     "url": "https://github.com/jamesking77-create/proctoring-system/issues"
   },
   "homepage": "https://github.com/jamesking77-create/proctoring-system#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
