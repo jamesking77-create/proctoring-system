@@ -1,6 +1,7 @@
 const {User, cohortList} = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const config = require("../config/config");
 require("dotenv").config();
 const authenticateToken = require("../middleware/authentication");
 
@@ -29,7 +30,6 @@ const registerUser = async (req, res, next) => {
 
         const newUser = new User({username, password, cohort});
         await newUser.save();
-
         return res.status(201).json({message: "User registered successfully."});
     } catch (err) {
         return next(err);
@@ -49,16 +49,39 @@ const login = async (req, res) => {
             res.json({message: "Login successful", token: "Bearer " + token});
         } else {
             res.status(401).json({message: "Invalid username or password"});
+
+
+            const comparePassword = await comparePasswords(
+                password,
+                storedUser.password
+            );
+
+            if (comparePassword) {
+                const token = jwt.sign(
+                    {userId: storedUser._id},
+                    process.env.JWT_SECRET,
+                    {
+                        expiresIn: "1h",
+                    }
+                );
+
+                res.header('Authorization', token);
+                console.log("sent token", req.get("Authorization"))
+                res.json({message: "Login successful"});
+            } else {
+                res.status(401).json({message: "Invalid username or password"});
+            }
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({message: "Invalid username or password"});
+        res.status(500).json({message: "An error occurred during login"});
     }
 };
 
 async function getUserFromDatabase(username) {
     try {
         const user = await User.findOne({username});
+
         if (user) {
             return user;
         } else {
@@ -87,7 +110,7 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
 
 const protectedResource = (req, res) => {
     res.json({message: "Access granted to protected resource"});
-}
+};
 
 module.exports = {
     registerUser,
