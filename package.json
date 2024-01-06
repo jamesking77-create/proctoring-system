@@ -15,11 +15,13 @@
     "body-parser": "^1.20.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
+    "node-rsa": "^1.1.1",
     "nodemon": "^3.0.2"
   },
   "repository": {
@@ -30,5 +32,8 @@
     "url": "https://github.com/jamesking77-create/proctoring-system/issues"
   },
   "homepage": "https://github.com/jamesking77-create/proctoring-system#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
