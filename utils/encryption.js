@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const CryptoJS = require('crypto-js');
 
 
 
@@ -14,9 +15,25 @@ function generateLogRandomKey(length) {
 
 }
 
+function decryptData(encryptedData, secretKey) {
+    try {
+        const key = CryptoJS.enc.Hex.parse(secretKey);
+        const decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+        });
+
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
+}
+
 
 
 module.exports = {
     generateRegRandomKey,
     generateLogRandomKey,
+    decryptData,
 };
