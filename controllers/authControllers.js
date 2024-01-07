@@ -1,8 +1,7 @@
 const { User, cohortList } = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const argon2 = require('argon2');
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const CryptoJS = require('crypto-js');
 const privateKey = require('../utils/encryption');
 
 let regkey = null;
@@ -30,20 +29,7 @@ const getLoginKey = async (req, res) =>{
     }
 };
 
-function decryptData(encryptedData, secretKey) {
-    try {
-        const key = CryptoJS.enc.Hex.parse(secretKey);
-        const decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7
-        });
 
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
-}
 
 
 
@@ -51,13 +37,9 @@ const registerUser = async (req, res, next) => {
     try {
       
         const { data } = req.body;
-        console.log("this is req body", req.body);
-        console.log("this is private key:", regkey);
-        const decryptedData = decryptData(data, regkey);
-        console.log("this is the decryption:", decryptedData);
+        const decryptedData = privateKey.decryptData(data, regkey);
         const { username, cohort, password } = JSON.parse(decryptedData);
-        console.log("this is the data:", username, cohort, password );
-
+      
         if (!username || !password || !cohort) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
@@ -71,9 +53,7 @@ const registerUser = async (req, res, next) => {
         if (existingUser) {
             return res.status(409).json({ message: "User with this username already exists" });
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword, cohort });
+        const newUser = new User({ username, password, cohort });
         await newUser.save();
 
         return res.status(201).json({ message: "User registered successfully." });
@@ -86,9 +66,8 @@ const registerUser = async (req, res, next) => {
 const login = async (req, res) => {
     try {
         const {data} = req.body;
-        const decryptedData = decryptData(data, logkey);
+        const decryptedData = privateKey.decryptData(data, logkey);
         const { username,  password } = JSON.parse(decryptedData);
-        console.log("this is the decrypted data:", username,  password );
         const storedUser = await getUserFromDatabase(username);
         const comparePassword = await comparePasswords(password, storedUser.password)
         if (comparePassword && storedUser) {
@@ -113,7 +92,6 @@ async function getUserFromDatabase(username) {
         if (user) {
             return user;
         } else {
-            console.log("User not found");
             return error;
         }
     } catch (error) {
@@ -128,7 +106,7 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
             throw new Error("Both inputPassword and storedPassword are required");
         }
 
-        const isMatch = await bcrypt.compare(inputPassword, storedPasswordHash);
+        const isMatch = await argon2.verify(storedPasswordHash,inputPassword);
         return isMatch;
     } catch (error) {
         console.error("Error comparing passwords:", error);
