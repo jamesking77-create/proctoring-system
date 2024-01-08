@@ -10,12 +10,12 @@ function authenticateToken(req, res, next) {
       .status(401)
       .json({ message: "Access denied - No token provided" });
   }
-  
-//   const [bearer, token] = authHeader.split(' ');
 
-//   if (bearer !== 'Bearer' || !token) {
-//     return res.status(401).json({ message: 'Invalid token format' });
-//   }
+  //   const [bearer, token] = authHeader.split(' ');
+
+  //   if (bearer !== 'Bearer' || !token) {
+  //     return res.status(401).json({ message: 'Invalid token format' });
+  //   }
 
   try {
     const secretKey = process.env.JWT_SECRET;
@@ -30,17 +30,15 @@ function authenticateToken(req, res, next) {
   } catch (error) {
     console.error(error);
 
-    
     if (error instanceof jwt.TokenExpiredError) {
-        console.error("Token has expired:", error.message);
-        return res.status(401).json({ message: "Token has expired" });
-      } else if (error instanceof jwt.JsonWebTokenError) {
+      console.error("Token has expired:", error.message);
+      return res.status(401).json({ message: "Token has expired" });
+    } else if (error instanceof jwt.JsonWebTokenError) {
       console.error("Invalid token format or signature:", error.message);
       return res
         .status(401)
         .json({ message: "Invalid token format or signature" });
-    } 
-    else {
+    } else {
       console.error("Error verifying token:", error.message);
       return res.status(401).json({ message: "Invalid token" });
     }
