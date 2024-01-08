@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
+router.get("/getRegistrationKey", authControllers.getRegistrationKey);
+router.get("/getLoginKey", authControllers.getLoginKey);
 
 router.get("/protected-resource", authenticateToken, (req, res) => {
     res.json({message: "Access granted to protected resource"});
