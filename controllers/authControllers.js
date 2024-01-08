@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const privateKey = require('../utils/encryption');
 
+
+
 let regkey = null;
 let logkey = null;
 
@@ -37,6 +39,7 @@ const registerUser = async (req, res, next) => {
     try {
       
         const { data } = req.body;
+        console.log(regkey,logkey)
         const decryptedData = privateKey.decryptData(data, regkey);
         const { username, cohort, password } = JSON.parse(decryptedData);
       
@@ -74,7 +77,7 @@ const login = async (req, res) => {
             const token = jwt.sign({userId: storedUser._id}, process.env.JWT_SECRET, {
                 expiresIn: "1h",
             });
-            res.header("Authorization", "Bearer" + token);
+            res.header("Authorization", "Bearer " + token);
             res.json({message: "Login successful"});
         } else {
             res.status(401).json({message: "Invalid username or password"});
