@@ -1,5 +1,3 @@
-const encryption = require("../utils/encryption");
-
 const questionList = [
   {
     question: "What is the purpose of a variable in programming?",
@@ -190,41 +188,8 @@ const questionList = [
     ],
   },
 ];
-let encryptQuestionKey = encryption.generateQuestionsRadomKey(32);
-let decryptQuestionResponseKey = encryption.generateQuestionsRadomKey(32);
 
-const getQuestionsKey = async (req, res) => {
-  try {
-    let mainKey = encryption.generateQuestionsRadomKey(32);
-    return res.status(201).json(mainKey);
-  } catch (err) {
-    return err;
-  }
-};
-
-
-function encryptedQuestion(req, res) {
-  try {
-    const encryptQuestions = encryption.encryptQuestions(questionList, encryptQuestionKey);
-    return res.json({ encryptQuestions });
-  } catch (error) {
-    console.error('Error encrypting questions:', error);
-
-    if (error instanceof EncryptionError) {
-      return res.status(500).json({ error: 'Encryption failed', details: error.message });
-    } else {
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-  }
-}
-
-async function handlesubmit(req, res) {
-  const userResponses = req.body;
-  const decryptedResponses =encryption.decryptQuestionResponse(userResponses,decryptQuestionResponseKey);
-  
-}
 
 module.exports = {
-  getQuestionsKey,
-  encryptedQuestion,
+  questionList,
 };
