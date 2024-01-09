@@ -7,8 +7,6 @@ const privateKey = require("../utils/encryption");
 let regkey = null;
 let logkey = null;
 
-
-
 const getRegistrationKey = async (req, res) => {
   try {
     let key = privateKey.generateRegRandomKey(32);
@@ -18,7 +16,6 @@ const getRegistrationKey = async (req, res) => {
     return err;
   }
 };
-
 
 const getLoginKey = async (req, res) => {
   try {
@@ -30,70 +27,66 @@ const getLoginKey = async (req, res) => {
   }
 };
 
+async function registerUser(req, res, next) {
+    try {
+        const { data } = req.body;
+        const decryptedData = privateKey.decryptData(data, regkey);
+        const { username, cohort, password } = JSON.parse(decryptedData);
 
-const registerUser = async (req, res, next) => {
-  try {
-    const { data } = req.body;
-    const decryptedData = privateKey.decryptData(data, regkey);
-    const { username, cohort, password } = JSON.parse(decryptedData);
-
-    if (!username || !password || !cohort) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all required fields" });
-    }
-    if (!cohortList.values.includes(cohort)) {
-      return res.status(400).json({
-        message: "Invalid Cohort. Must be one of: 16, 17, 18, 19, 20",
-      });
-    }
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User with this username already exists" });
-    }
-    const newUser = new User({ username, password, cohort });
-    await newUser.save();
-
-    return res.status(201).json({ message: "User registered successfully." });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-
-const login = async (req, res) => {
-  try {
-    const { data } = req.body;
-    const decryptedData = privateKey.decryptData(data, logkey);
-    const { username, password } = JSON.parse(decryptedData);
-    const storedUser = await getUserFromDatabase(username);
-    const comparePassword = await comparePasswords(
-      password,
-      storedUser.password
-    );
-    if (comparePassword && storedUser) {
-      const token = jwt.sign(
-        { userId: storedUser._id },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
+        if (!username || !password || !cohort) {
+            return res
+                .status(400)
+                .json({ message: "Please provide all required fields" });
         }
-      );
-      res.header("Authorization", "Bearer" + token);
-      res.json({ message: "Login successful" });
-    } else {
-      res.status(401).json({ message: "Invalid username or password" });
+        if (!cohortList.values.includes(cohort)) {
+            return res.status(400).json({
+                message: "Invalid Cohort. Must be one of: 16, 17, 18, 19, 20",
+            });
+        }
+
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res
+                .status(409)
+                .json({ message: "User with this username already exists" });
+        }
+        const newUser = new User({ username, password, cohort });
+        await newUser.save();
+
+        return res.status(201).json({ message: "User registered successfully." });
+    } catch (err) {
+        return next(err);
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Invalid username or password" });
-  }
-};
+}
 
-
+async function login(req, res) {
+    try {
+        const { data } = req.body;
+        const decryptedData = privateKey.decryptData(data, logkey);
+        const { username, password } = JSON.parse(decryptedData);
+        const storedUser = await getUserFromDatabase(username);
+        const comparePassword = await comparePasswords(
+            password,
+            storedUser.password
+        );
+        if (comparePassword && storedUser) {
+            const token = jwt.sign(
+                { userId: storedUser._id },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "1h",
+                }
+            );
+            res.header("Authorization", "Bearer" + token);
+            res.json({ message: "Login successful" });
+        } else {
+            res.status(401).json({ message: "Invalid username or password" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Invalid username or password" });
+    }
+}
 
 async function getUserFromDatabase(username) {
   try {
@@ -109,7 +102,6 @@ async function getUserFromDatabase(username) {
   }
 }
 
-
 async function comparePasswords(inputPassword, storedPasswordHash) {
   try {
     if (!inputPassword || !storedPasswordHash) {
@@ -123,8 +115,6 @@ async function comparePasswords(inputPassword, storedPasswordHash) {
     throw error;
   }
 }
-
-
 
 const protectedResource = (req, res) => {
   res.json({ message: "Access granted to protected resource" });
