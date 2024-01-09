@@ -6,7 +6,6 @@ const app = express();
 const authControllers = require('./controllers/authControllers');
 const config = require('./config/config');
 const colors = require('colors')
-const {authenticateToken, protect} = require("./middleware/authentication");
 const router = express.Router();
 const authenticateToken = require('../proctoring-system/middleware/authentication')
 
@@ -19,13 +18,11 @@ app.use(cors());
 
 router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
-router.get("/protected-resource", protect, (req, res) => {
-    res.json({message: "Access granted to protected resource"});
+
+router.get("/protected-resource", authenticateToken.authenticateToken, (req, res) => {
+    res.json({ message: "Access granted to protected resource" });
 });
 
-router.get("/protected-resource", authenticateToken.authenticateToken, (req,res) => {
-    res.json({message: "Access granted to protected resource"});
-});
 
 app.use("/api", router);
 
@@ -64,7 +61,7 @@ app.use((err, req, res, next) => {
 //
 // app.use(bodyParser.json());
 // app.use(cors());
-//
+//g
 // mongoose.connect('mongodb://127.0.0.1:27017/proctoring-system', {useNewUrlParser: true, useUnifiedTopology: true});
 // mongoose.connection.on('error', (error) => console.log('MongoDB Connection error:'.red.underline, error));
 //
