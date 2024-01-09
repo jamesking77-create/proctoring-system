@@ -3,10 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 const authControllers = require('./controllers/authControllers');
+const testControllers  = require('./controllers/testControllers')
 const config = require('./config/config');
 const router = express.Router();
-const authenticateToken = require('../proctoring-system/middleware/authentication')
-const  question  = require('../proctoring-system/controllers/testControllers');
+const authenticateToken = require('../proctoringsystem/middleware/authentication')
+const encryptedQuestions = require('../proctoringsystem/utils/encryption')
+const crypto = require("crypto");
+const  question  = require('../proctoringsystem/questionBank/questionBank');
 
 mongoose.connect(config.mongodb.url);
 
@@ -24,11 +27,11 @@ router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
 router.get("/getRegistrationKey", authControllers.getRegistrationKey);
 router.get("/getLoginKey", authControllers.getLoginKey);
-router.get("/getQuestionKey",question.getQuestionsKey)
+router.get("/getQuestionKey", testControllers.getQuestionsKey)
 router.get("/protected-resource", authenticateToken.authenticateToken, (req,res) => {
     res.json({message: "Access granted to protected resource"});
 });
-router.get('/questions', question.encryptedQuestion);
+router.get('/questions', testControllers.encryptedQuestion);
 
 
 
