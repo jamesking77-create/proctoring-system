@@ -1,20 +1,19 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
-const authControllers = require('./controllers/authControllers');
-const config = require('./config/config');
+const colors = require("colors");
+const authControllers = require("./controllers/authControllers");
+const config = require("./config/config");
 const router = express.Router();
-const authenticateToken = require('../proctoring-system/middleware/authentication')
-const  question  = require('../proctoring-system/controllers/testControllers');
+const authenticateToken = require("../proctoring-system/middleware/authentication");
+const question = require("../proctoring-system/controllers/testControllers");
 
 mongoose.connect(config.mongodb.url);
 
 const PORT = process.env.port || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`.rainbow);
-});
+
 
 app.use(express.json());
 app.use(cors());
@@ -24,33 +23,37 @@ router.post("/register", authControllers.registerUser);
 router.post("/login", authControllers.login);
 router.get("/getRegistrationKey", authControllers.getRegistrationKey);
 router.get("/getLoginKey", authControllers.getLoginKey);
-router.get("/getQuestionKey",question.getQuestionsKey)
-router.get("/protected-resource", authenticateToken.authenticateToken, (req,res) => {
-    res.json({message: "Access granted to protected resource"});
-});
-router.get('/questions', question.encryptedQuestion);
-
+router.get("/getQuestionKey", question.getQuestionsKey);
+router.get(
+  "/protected-resource",
+  authenticateToken.authenticateToken,
+  (req, res) => {
+    res.json({ message: "Access granted to protected resource" });
+  }
+);
+router.get("/questions", question.encryptedQuestion);
+router.post("/submit",question.handlesubmit)
 
 
 app.get("/", (req, res) => {
-    res.send("server is working");
+  res.send("server is working");
 });
 
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`.rainbow);
+  });
 // app.use(bodyParser.json());
 
 const db = mongoose.connection;
 
-
-
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-    console.log('Connected to MongoDB'.green)
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.once("open", () => {
+  console.log("Connected to MongoDB".green);
 });
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({message: 'Internal server this error'});
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal server this error" });
 });
 
 // const express = require('express');

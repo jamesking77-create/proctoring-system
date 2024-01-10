@@ -24,9 +24,9 @@ function authenticateToken(req, res, next) {
     if (decoded.exp < Date.now() / 1000) {
       return res.status(401).json({ message: "Token has expired" });
     }
-
     req.user = decoded;
     next();
+    
   } catch (error) {
     console.error(error);
 
