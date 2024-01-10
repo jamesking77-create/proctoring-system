@@ -38,26 +38,8 @@ async function handlesubmit(req, res) {
 //   const decryptedResponses = encryption.decryptQuestionResponse(
 //     userResponses,
 //     decryptQuestionResponseKey
-//   );
-//   const userId = req.body.userId; // Adjust this based on your actual request structure
-
-  
+//   );  
   const userPassFailStatus = calculatePassFailStatus(req.body.responses);
-
-//   // Save user responses and pass/fail status to the database
-//   for (const response of decryptedResponses) {
-//     const { questionId, isCorrect } = response;
-
-//     const userResponse = new UserResponse({
-//       user: userId,
-//       questionId: questionId,
-//       isCorrect: isCorrect,
-//       // Add other relevant fields as needed
-//     });
-
-//     await userResponse.save();
-//   }
-//  await User.findByIdAndUpdate(userId, { passFailStatus: userPassFailStatus });
   res.json({ success: true, passFailStatus: userPassFailStatus });
 }
 
