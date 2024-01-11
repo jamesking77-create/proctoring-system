@@ -44,7 +44,7 @@ async function handlesubmit(req, res) {
 }
 
 function calculatePassFailStatus(responses) {
-  const passingThreshold = 0.7; 
+  const passingThreshold = 0.6; 
   const correctCount = responses.filter(
     (response) => response.isCorrect
   ).length;
