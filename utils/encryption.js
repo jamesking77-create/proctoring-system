@@ -1,15 +1,11 @@
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
 
-function generateRegRandomKey(length) {
+function generateRandomKey(length) {
   const randomKey = crypto.randomBytes(length).toString("hex");
   return randomKey;
 }
 
-function generateLogRandomKey(length) {
-  const randomKey = crypto.randomBytes(length).toString("hex");
-  return randomKey;
-}
 
 function generateQuestionsRadomKey(length){
     const randomKey = crypto.randomBytes(length).toString("hex")
@@ -47,8 +43,8 @@ function encryptQuestions(data, key) {
   };
 
 module.exports = {
-  generateRegRandomKey,
-  generateLogRandomKey,
+  generateRandomKey,
+  // generateLogRandomKey,
   generateQuestionsRadomKey,
   decryptData,
   encryptQuestions,
