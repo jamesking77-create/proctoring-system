@@ -3,13 +3,16 @@ const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const privateKey = require("../utils/encryption");
+require('../utils/privateConfig');
+const secretKey = process.env.SECRET_KEY;
 
 let regkey = null;
 let logkey = null;
 
 const getRegistrationKey = async (req, res) => {
   try {
-    let key = privateKey.generateRegRandomKey(32);
+    let key = secretKey
+    console.log("this key 1:", key);
     regkey = key;
     return res.status(201).json(key);
   } catch (err) {
@@ -19,7 +22,8 @@ const getRegistrationKey = async (req, res) => {
 
 const getLoginKey = async (req, res) => {
   try {
-    let pkey = privateKey.generateLogRandomKey(32);
+    let pkey = secretKey
+    console.log("this key 2:", pkey);
     logkey = pkey;
     return res.status(201).json(pkey);
   } catch (err) {
