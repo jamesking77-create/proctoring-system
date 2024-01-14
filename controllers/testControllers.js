@@ -34,23 +34,23 @@ function encryptedQuestion(req, res) {
 }
 
 async function handlesubmit(req, res) {
-//   const userResponses = req.body.response;
-//   const decryptedResponses = encryption.decryptQuestionResponse(
-//     userResponses,
-//     decryptQuestionResponseKey
-//   );  
-  const userPassFailStatus = calculatePassFailStatus(req.body.responses);
-  res.json({ success: true, passFailStatus: userPassFailStatus });
-}
-
-function calculatePassFailStatus(responses) {
-  const passingThreshold = 0.7; 
-  const correctCount = responses.filter(
-    (response) => response.isCorrect
-  ).length;
-  const correctnessPercentage = correctCount / responses.length;
-  return correctnessPercentage >= passingThreshold ? "Pass" : "Fail";
-}
+     const userResponses = req.body.responses;
+  //   const decryptedResponses = encryption.decryptQuestionResponse(
+  //     userResponses,
+  //     decryptQuestionResponseKey
+  //   );  
+    const userPassFailStatus = calculatePassFailStatus(userResponses);
+    res.json({ success: true, passFailStatus: userPassFailStatus });
+  }
+  
+  function calculatePassFailStatus(responses) {
+    const passingThreshold = 0.7; 
+    const correctCount = responses.filter(
+      (response) => response.isCorrect
+    ).length;
+    const correctnessPercentage = correctCount / responses.length;
+    return correctnessPercentage >= passingThreshold ? "Pass" : "Fail";
+  }
 
 module.exports = {
   getQuestionsKey,
