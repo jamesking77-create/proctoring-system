@@ -44,7 +44,6 @@ function encryptQuestions(data, key) {
 
 module.exports = {
   generateRandomKey,
-  // generateLogRandomKey,
   generateQuestionsRadomKey,
   decryptData,
   encryptQuestions,
