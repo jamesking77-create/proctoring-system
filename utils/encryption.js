@@ -6,10 +6,9 @@ function generateRandomKey(length) {
   return randomKey;
 }
 
-
-function generateQuestionsRadomKey(length){
-    const randomKey = crypto.randomBytes(length).toString("hex")
-    return randomKey
+function generateQuestionsRadomKey(length) {
+  const randomKey = crypto.randomBytes(length).toString("hex");
+  return randomKey;
 }
 
 function decryptData(encryptedData, secretKey) {
@@ -28,19 +27,15 @@ function decryptData(encryptedData, secretKey) {
 }
 
 function encryptQuestions(data, key) {
-  const encryptedData = CryptoJS.AES.encrypt(
-    JSON.stringify(data),
-    key
-  ).toString();
+  const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
   return encryptedData;
 }
 
-  
-  
-  const decryptQuestionResponse = (encryptedData,decryptQuestionResponseKey) => {
-    const bytes = CryptoJS.AES.decrypt(encryptedData, decryptQuestionResponseKey);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  };
+
+const decryptQuestionResponse = (encryptedData, decryptQuestionResponseKey) => {
+  const bytes = CryptoJS.AES.decrypt(encryptedData, decryptQuestionResponseKey);
+  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+};
 
 module.exports = {
   generateRandomKey,
